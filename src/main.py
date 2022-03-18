@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
+from models import db, User, Character
 #from models import Person
 
 app = Flask(__name__)
@@ -33,11 +33,43 @@ def sitemap():
 @app.route('/user', methods=['GET'])
 def handle_hello():
 
-    response_body = {
-        "msg": "Hello, this is your GET /user response "
-    }
+    users = User.query.all()
+    all_users = list(map(lambda x: x.serialize(), users))
 
-    return jsonify(response_body), 200
+    return jsonify(all_users), 200
+@app.route('/user', methods=['POST'])
+def create_user():
+
+    request_body_user = request.get_json()
+    user1 = User(first_name=request_body_user["first_name"], email=request_body_user["email"], password=request_body_user["password"])
+    db.session.add(user1)
+    db.session.commit()
+
+    return jsonify(request_body_user), 200
+
+@app.route('/people', methods=['GET'])
+def getPeople():
+    people = Character.query.all()
+    all_people = list(map(lambda x: x.serialize(), people))
+
+    return jsonify(all_people), 200
+@app.route('/people', methods=['POST'])
+def setPeople():
+    request_body_people = request.get_json()
+    person = Character(CHAR_NAME=request_body_people["name"], CHAR_SPECIES=request_body_people["species"], CHAR_GENDER=request_body_people["gender"])
+    db.session.add(person)
+    db.session.commit()
+
+    return jsonify(request_body_people), 200
+@app.route('/people/<int:people_id>', methods=['DELETE'])
+def deletePeople(people_id):
+    person = Character.query.get(people_id)
+    if person is None:
+        raise APIException('User not found', status_code=404)
+    db.session.delete(person)
+    db.session.commit()
+
+    return jsonify("Character has been deleted!"), 200
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
