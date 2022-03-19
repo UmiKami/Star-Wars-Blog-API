@@ -104,4 +104,5 @@ class Character(db.Model):
             "species": self.CHAR_SPECIES,
             "name": self.CHAR_NAME,
             "gender": self.CHAR_GENDER
+            # do not serialize the password, its a security breach
         }

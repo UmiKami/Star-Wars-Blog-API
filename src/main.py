@@ -2,6 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 import os
+import json
 from flask import Flask, request, jsonify, url_for
 from flask_migrate import Migrate
 from flask_swagger import swagger
@@ -61,6 +62,16 @@ def setPeople():
     db.session.commit()
 
     return jsonify(request_body_people), 200
+
+@app.route('/people/<int:people_id>', methods=['GET'])
+def getPerson(people_id):
+    person = Character.query.get(people_id)
+    if person is None:
+        raise APIException('User not found', status_code=404)    
+    currentPerson = [person.serialize() for per in person]
+
+    return jsonify(currentPerson), 200
+    
 @app.route('/people/<int:people_id>', methods=['DELETE'])
 def deletePeople(people_id):
     person = Character.query.get(people_id)
