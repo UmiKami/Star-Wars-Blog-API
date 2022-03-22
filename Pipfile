@@ -25,6 +25,7 @@ python_version = "3.8"
 [scripts]
 start="flask run -p 3000 -h 0.0.0.0"
 init="flask db init"
+stamp_head = "flask db stamp head"
 migrate="flask db migrate"
 upgrade="flask db upgrade"
 downgrade="flask db downgrade"

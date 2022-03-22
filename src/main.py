@@ -9,7 +9,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User, Character,Planet
+from models import db, User, Userr, Character,Planet, Favorites_List
 #from models import Person
 
 app = Flask(__name__)
@@ -31,22 +31,22 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
-@app.route('/user', methods=['GET'])
-def handle_hello():
+# @app.route('/user', methods=['GET'])
+# def handle_hello():
 
-    users = User.query.all()
-    all_users = list(map(lambda x: x.serialize(), users))
+#     users = User.query.all()
+#     all_users = list(map(lambda x: x.serialize(), users))
 
-    return jsonify(all_users), 200
-@app.route('/user', methods=['POST'])
-def create_user():
+#     return jsonify(all_users), 200
+# @app.route('/user', methods=['POST'])
+# def create_user():
 
-    request_body_user = request.get_json()
-    user1 = User(first_name=request_body_user["first_name"], email=request_body_user["email"], password=request_body_user["password"])
-    db.session.add(user1)
-    db.session.commit()
+#     request_body_user = request.get_json()
+#     user1 = User(first_name=request_body_user["first_name"], email=request_body_user["email"], password=request_body_user["password"])
+#     db.session.add(user1)
+#     db.session.commit()
 
-    return jsonify(request_body_user), 200
+#     return jsonify(request_body_user), 200
 
 @app.route('/people', methods=['GET'])
 def getPeople():
@@ -54,6 +54,29 @@ def getPeople():
     all_people = list(map(lambda x: x.serialize(), people))
 
     return jsonify(all_people), 200
+
+
+@app.route('/planets', methods=["GET"])
+def getPlanets():
+    planets = Planet.query.all()
+
+    all_planets = list(map(lambda x: x.serialize(), planets))
+
+    return jsonify(all_planets), 200
+
+@app.route('/users', methods=['GET'])
+def getUsers():
+    userrs = Userr.query.all()
+    all_userrs = list(map(lambda x: x.serialize(), userrs))
+
+    return jsonify(all_userrs)
+
+@app.route('/users/favorites', methods=['GET'])
+def getUserFavorites():
+    favorites = Favorites_List.query.all()
+
+#####################################################################
+### Example code ###   
 
 # @app.route('/people', methods=['POST'])
 # def setPeople():
@@ -75,15 +98,6 @@ def getPeople():
 #     }
 
 #     return jsonify(payload), 200
-
-@app.route('/planets', methods=["GET"])
-def getPlanets():
-    planets = Planet.query.all()
-
-    all_planets = list(map(lambda x: x.serialize(), planets))
-
-    return jsonify(all_planets), 200
-
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))
