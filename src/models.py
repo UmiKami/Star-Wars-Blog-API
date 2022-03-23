@@ -3,57 +3,17 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(80), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(80), unique=False, nullable=False)
-    is_active = db.Column(db.Boolean(), unique=False, nullable=True, default=True)
-
-    def __repr__(self):
-        return '<User %r>' % self.username
-
-    def serialize(self):
-        return {
-            "id": self.id,
-            "email": self.email,
-            # do not serialize the password, its a security breach
-        }
-
-class Userr(db.Model):
-    __tablename__ = 'Userr'
+    __tablename__ = 'User'
 
     id = db.Column(db.Integer, primary_key=True)
     USER_FNAME = db.Column(db.String(250), nullable=False)
     USER_LNAME = db.Column(db.String(250), nullable=False)
     USER_EMAIL = db.Column(db.String(250), nullable=False)
-    USER_PASSWORD = db.Column(db.String(250), nullable=False)
-    USER_FAVORITE_LIST = db.Column(db.Integer, db.ForeignKey("Favorites_List.id"))
+    USER_PASSWORD = db.Column(db.String(250), nullable=False)   
+    favorites = db.relationship('Favorites_List')
 
     def __repr__(self):
-        return '<Userr %r>' % self.userrname
-
-class Favorites_List(db.Model):
-    __tablename__ = 'Favorites_List'
-
-    id = db.Column(db.Integer, primary_key=True)
-    USER_ID = db.Column(db.Integer, db.ForeignKey('Userr.id'))
-    FAV_CHARACTER = db.Column(db.Integer, db.ForeignKey('Character.id'))
-    FAV_PLANET = db.Column(db.Integer, db.ForeignKey('Planet.id'))
-    user = db.relationship("Userr", foreign_keys=[USER_ID])
-    favoriteChar = db.relationship("Character", foreign_keys=[FAV_CHARACTER])
-    favoritePlanet = db.relationship("Planet", foreign_keys=[FAV_PLANET])
-
-    def __repr__(self):
-        return '<Favorites_List %r>' % self.id
-
-    def serialize(self):
-        return {
-            "id": self.id,
-            "favorite_character": self.FAV_CHARACTER,
-            "favorite_planet": self.FAV_PLANET,
-            # do not serialize the password, its a security breach
-        }
-
+        return self.USER_EMAIL + '-' + str(self.id)
 
 class Planet(db.Model):
     __tablename__ = 'Planet'
@@ -104,5 +64,35 @@ class Character(db.Model):
             "species": self.CHAR_SPECIES,
             "name": self.CHAR_NAME,
             "gender": self.CHAR_GENDER
+            # do not serialize the password, its a security breach
+        }
+class Favorites_List(db.Model):
+    __tablename__ = 'Favorites_List'
+
+    id = db.Column(db.Integer, primary_key=True)
+    USER_ID = db.Column(db.Integer, db.ForeignKey('User.id'))
+    FAV_CHARACTER_ID = db.Column(db.Integer, db.ForeignKey('Character.id'))
+    FAV_PLANET_ID = db.Column(db.Integer, db.ForeignKey(Planet.id))
+    user = db.relationship("User", foreign_keys=[USER_ID])
+    character = db.relationship('Character')
+    planet = db.relationship('Planet')
+
+    def __repr__(self):
+        return '<Favorites_List %r>' % self.id
+
+    def serialize(self):
+        planet = None
+        character = None
+        if self.planet is not None:
+            planet=self.planet.serialize()
+        if self.character is not None:
+            character = self.character.serialize()
+
+        return {
+            "id": self.id,
+            "favorite_character_id": self.FAV_CHARACTER_ID,
+            "favorite_planet_id": self.FAV_PLANET_ID,
+            "planet": planet,
+            "character": character,
             # do not serialize the password, its a security breach
         }

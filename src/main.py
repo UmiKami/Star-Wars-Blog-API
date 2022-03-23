@@ -9,7 +9,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User, Userr, Character,Planet, Favorites_List
+from models import db, User, Character,Planet, Favorites_List
 #from models import Person
 
 app = Flask(__name__)
@@ -66,14 +66,17 @@ def getPlanets():
 
 @app.route('/users', methods=['GET'])
 def getUsers():
-    userrs = Userr.query.all()
-    all_userrs = list(map(lambda x: x.serialize(), userrs))
+    users = User.query.all()
+    all_userrs = list(map(lambda x: x.serialize(), users))
 
-    return jsonify(all_userrs)
+    return jsonify(all_user)
 
 @app.route('/users/favorites', methods=['GET'])
 def getUserFavorites():
     favorites = Favorites_List.query.all()
+    all_favorites = list(map(lambda x: x.serialize(), favorites))
+
+    return jsonify(all_favorites)
 
 #####################################################################
 ### Example code ###   
