@@ -77,6 +77,14 @@ def getUserFavorites():
     all_favorites = list(map(lambda x: x.serialize(), favorites))
 
     return jsonify(all_favorites)
+@app.route('/users/favorites/<int:char>', methods=['POST'])
+def postUserFavorite():
+    request_body_user = request.get_json()
+    favorite = Favorites_List(user_id=request_body_user["user_id"], fav_character_id=request_body_user["fav_character_id"], password=request_body_user["password"])
+    db.session.add(user1)
+    db.session.commit()
+
+    return jsonify(request_body_user), 200
 
 #####################################################################
 ### Example code ###   

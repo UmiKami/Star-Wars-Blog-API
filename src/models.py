@@ -90,8 +90,7 @@ class Favorites_List(db.Model):
 
         return {
             "id": self.id,
-            "favorite_character_id": self.FAV_CHARACTER_ID,
-            "favorite_planet_id": self.FAV_PLANET_ID,
+            "user_id":self.USER_ID,
             "planet": planet,
             "character": character,
             # do not serialize the password, its a security breach
