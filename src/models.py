@@ -14,6 +14,15 @@ class User(db.Model):
 
     def __repr__(self):
         return self.USER_EMAIL + '-' + str(self.id)
+    
+    def serialize(self):
+        return {
+            "id": self.id,
+            "first_name": self.USER_FNAME,
+            "last_name": self.USER_LNAME,
+            "email": self.USER_EMAIL,
+            # do not serialize the password, its a security breach
+        }
 
 class Planet(db.Model):
     __tablename__ = 'Planet'

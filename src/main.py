@@ -67,9 +67,9 @@ def getPlanets():
 @app.route('/users', methods=['GET'])
 def getUsers():
     users = User.query.all()
-    all_userrs = list(map(lambda x: x.serialize(), users))
+    all_users = list(map(lambda x: x.serialize(), users))
 
-    return jsonify(all_user)
+    return jsonify(all_users)
 
 @app.route('/users/favorites', methods=['GET'])
 def getUserFavorites():
@@ -77,11 +77,11 @@ def getUserFavorites():
     all_favorites = list(map(lambda x: x.serialize(), favorites))
 
     return jsonify(all_favorites)
-@app.route('/users/favorites/<int:char>', methods=['POST'])
+@app.route('/users/favorites', methods=['POST'])
 def postUserFavorite():
     request_body_user = request.get_json()
-    favorite = Favorites_List(user_id=request_body_user["user_id"], fav_character_id=request_body_user["fav_character_id"], password=request_body_user["password"])
-    db.session.add(user1)
+    favorite = Favorites_List(USER_ID=request_body_user["user_id"], FAV_CHARACTER_ID=request_body_user["fav_character_id"], FAV_PLANET_ID=request_body_user["fav_planet_id"])
+    db.session.add(favorite)
     db.session.commit()
 
     return jsonify(request_body_user), 200
