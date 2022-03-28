@@ -9,7 +9,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User, Character,Planet, Favorites_List
+from models import db, Character, Planet, Favorites_List, User
 #from models import Person
 
 app = Flask(__name__)
@@ -77,14 +77,40 @@ def getUserFavorites():
     all_favorites = list(map(lambda x: x.serialize(), favorites))
 
     return jsonify(all_favorites)
-@app.route('/users/favorites', methods=['POST'])
-def postUserFavorite():
+@app.route('/users/favorites/people/<int:people_id>', methods=['POST'])
+def postUserFavoriteChar(people_id):
     request_body_user = request.get_json()
-    favorite = Favorites_List(USER_ID=request_body_user["user_id"], FAV_CHARACTER_ID=request_body_user["fav_character_id"], FAV_PLANET_ID=request_body_user["fav_planet_id"])
+    favorite = Favorites_List(USER_ID=request_body_user["user_id"], FAV_CHARACTER_ID=people_id)
     db.session.add(favorite)
     db.session.commit()
 
     return jsonify(request_body_user), 200
+@app.route('/users/favorites/planet/<int:planet_id>', methods=['POST'])
+def postUserFavoritePlanet(planet_id):
+    request_body_user = request.get_json()
+    favorite = Favorites_List(USER_ID=request_body_user["user_id"], FAV_PLANET_ID=planet_id)
+    db.session.add(favorite)
+    db.session.commit()
+
+    return jsonify(request_body_user), 200
+
+# DELETE
+
+@app.route('/users/favorites/people/<int:people_id>', methods=['DELETE'])
+def deleteUserFavoriteChar(people_id):
+    favChar = Favorites_List.query.filter_by(FAV_CHARACTER_ID = people_id).first()
+    db.session.delete(favChar)
+    db.session.commit()
+
+    return "Succesfully deleted", 200
+
+@app.route('/users/favorites/planet/<int:planet_id>', methods=['DELETE'])
+def deleteUserFavoritePlanet(planet_id):
+    favPlanet = Favorites_List.query.filter_by(FAV_PLANET_ID = planet_id).first()
+    db.session.delete(favPlanet)
+    db.session.commit()
+
+    return "Succesfully deleted", 200
 
 #####################################################################
 ### Example code ###   

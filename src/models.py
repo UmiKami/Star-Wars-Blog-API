@@ -81,7 +81,7 @@ class Favorites_List(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     USER_ID = db.Column(db.Integer, db.ForeignKey('User.id'))
     FAV_CHARACTER_ID = db.Column(db.Integer, db.ForeignKey('Character.id'))
-    FAV_PLANET_ID = db.Column(db.Integer, db.ForeignKey(Planet.id))
+    FAV_PLANET_ID = db.Column(db.Integer, db.ForeignKey("Planet.id"))
     user = db.relationship("User", foreign_keys=[USER_ID])
     character = db.relationship('Character')
     planet = db.relationship('Planet')
